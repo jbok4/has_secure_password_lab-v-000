@@ -1,21 +1,13 @@
 class SessionsController < ApplicationController
 
-
   def new
   end
-  
-  def create
-    user = User.find_by(name: params[:session][:name])
-    if user && user.authenticate(params[:session][:password])
-      log_in user
-      redirect_to user
-    else
-      flash.now[:danger] = 'Invalid name/password'
-    render 'new'
-    end
-  end 
 
-  def destroy
+  def create
+    @user = User.find_by(name: params[:user][:name])
+    return redirect_to new_session_path unless @user.authenticate(params[:user][:password])
+    session[:user_id] = @user.id
+    redirect_to users_welcome_path
   end
 
 end
